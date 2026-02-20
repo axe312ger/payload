@@ -9,6 +9,7 @@ type AddFilterOptionsToFieldsArgs<ConfigType = unknown> = {
   blockReferencesWithFilters: string[]
   config: Config | SanitizedConfig
   fields: Field[]
+  hasMany?: boolean
   tenantEnabledCollectionSlugs: string[]
   tenantEnabledGlobalSlugs: string[]
   tenantFieldName: string
@@ -24,6 +25,7 @@ export function addFilterOptionsToFields<ConfigType = unknown>({
   blockReferencesWithFilters,
   config,
   fields,
+  hasMany,
   tenantEnabledCollectionSlugs,
   tenantEnabledGlobalSlugs,
   tenantFieldName,
@@ -66,6 +68,7 @@ export function addFilterOptionsToFields<ConfigType = unknown>({
       if (hasTenantRelationsips) {
         newField = addRelationshipFilter({
           field: newField as RelationshipField,
+          hasMany,
           tenantEnabledCollectionSlugs,
           tenantFieldName,
           tenantsArrayFieldName,
@@ -86,6 +89,7 @@ export function addFilterOptionsToFields<ConfigType = unknown>({
         blockReferencesWithFilters,
         config,
         fields: newField.fields,
+        hasMany,
         tenantEnabledCollectionSlugs,
         tenantEnabledGlobalSlugs,
         tenantFieldName,
@@ -119,6 +123,7 @@ export function addFilterOptionsToFields<ConfigType = unknown>({
             blockReferencesWithFilters,
             config,
             fields: block.fields,
+            hasMany,
             tenantEnabledCollectionSlugs,
             tenantEnabledGlobalSlugs,
             tenantFieldName,
@@ -143,6 +148,7 @@ export function addFilterOptionsToFields<ConfigType = unknown>({
           blockReferencesWithFilters,
           config,
           fields: tab.fields,
+          hasMany,
           tenantEnabledCollectionSlugs,
           tenantEnabledGlobalSlugs,
           tenantFieldName,
@@ -163,6 +169,7 @@ export function addFilterOptionsToFields<ConfigType = unknown>({
 
 type AddFilterArgs<ConfigType = unknown> = {
   field: RelationshipField
+  hasMany?: boolean
   tenantEnabledCollectionSlugs: string[]
   tenantFieldName: string
   tenantsArrayFieldName: string
@@ -174,6 +181,7 @@ type AddFilterArgs<ConfigType = unknown> = {
 }
 function addRelationshipFilter<ConfigType = unknown>({
   field,
+  hasMany,
   tenantEnabledCollectionSlugs,
   tenantFieldName,
   tenantsArrayFieldName = defaults.tenantsArrayFieldName,
@@ -201,6 +209,7 @@ function addRelationshipFilter<ConfigType = unknown>({
     const tenantFilterResults = filterDocumentsByTenants({
       docTenantID: args.data?.[tenantFieldName],
       filterFieldName: tenantFieldName,
+      hasMany,
       req: args.req,
       tenantsArrayFieldName,
       tenantsArrayTenantFieldName,

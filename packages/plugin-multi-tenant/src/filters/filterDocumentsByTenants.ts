@@ -15,6 +15,7 @@ type Args<ConfigType = unknown> = {
    */
   docTenantID?: number | number[] | string | string[]
   filterFieldName: string
+  hasMany?: boolean
   req: PayloadRequest
   tenantsArrayFieldName?: string
   tenantsArrayTenantFieldName?: string
@@ -26,6 +27,7 @@ type Args<ConfigType = unknown> = {
 export const filterDocumentsByTenants = <ConfigType = unknown>({
   docTenantID,
   filterFieldName,
+  hasMany,
   req,
   tenantsArrayFieldName = defaults.tenantsArrayFieldName,
   tenantsArrayTenantFieldName = defaults.tenantsArrayTenantFieldName,
@@ -42,7 +44,9 @@ export const filterDocumentsByTenants = <ConfigType = unknown>({
   if (selectedTenant) {
     return {
       [filterFieldName]: {
-        in: Array.isArray(selectedTenant) ? selectedTenant : [selectedTenant],
+        // When hasMany is true and docTenantID was provided, it's already an array
+        // When using cookie tenant, it's always a single value that needs wrapping
+        in: hasMany && docTenantID !== undefined ? selectedTenant : [selectedTenant],
       },
     }
   }

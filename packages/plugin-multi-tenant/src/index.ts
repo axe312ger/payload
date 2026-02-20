@@ -169,10 +169,14 @@ export const multiTenantPlugin =
         /**
          * Add filter options to all relationship fields
          */
+        const tenantFieldConfig = pluginConfig.collections[collection.slug]?.tenantFieldOverrides
+          ? pluginConfig.collections[collection.slug]?.tenantFieldOverrides
+          : pluginConfig.tenantField || {}
         collection.fields = addFilterOptionsToFields({
           blockReferencesWithFilters,
           config: incomingConfig,
           fields: collection.fields,
+          hasMany: tenantFieldConfig?.hasMany,
           tenantEnabledCollectionSlugs: collectionSlugs,
           tenantEnabledGlobalSlugs: globalCollectionSlugs,
           tenantFieldName,
@@ -356,10 +360,14 @@ export const multiTenantPlugin =
         /**
          * Add filter options to all relationship fields
          */
+        const tenantFieldConfig = pluginConfig.collections[collection.slug]?.tenantFieldOverrides
+          ? pluginConfig.collections[collection.slug]?.tenantFieldOverrides
+          : pluginConfig.tenantField || {}
         collection.fields = addFilterOptionsToFields({
           blockReferencesWithFilters,
           config: incomingConfig,
           fields: collection.fields,
+          hasMany: tenantFieldConfig?.hasMany,
           tenantEnabledCollectionSlugs: collectionSlugs,
           tenantEnabledGlobalSlugs: globalCollectionSlugs,
           tenantFieldName,
@@ -378,9 +386,7 @@ export const multiTenantPlugin =
               name: tenantFieldName,
               debug: pluginConfig.debug,
               isAutosaveEnabled: hasAutosaveEnabled(collection),
-              overrides: pluginConfig.collections[collection.slug]?.tenantFieldOverrides
-                ? pluginConfig.collections[collection.slug]?.tenantFieldOverrides
-                : pluginConfig.tenantField || {},
+              overrides: tenantFieldConfig,
               tenantsArrayFieldName,
               tenantsArrayTenantFieldName,
               tenantsCollectionSlug,
